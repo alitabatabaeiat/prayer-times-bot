@@ -1,0 +1,23 @@
+{
+  "name": "owghat_bot",
+  "version": "1.0.0",
+  "description": "A Telegram Bot to show you pray times",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js"
+  },
+  "keywords": [
+    "Telegram",
+    "Bot",
+    "praytime",
+    "owghat"
+  ],
+  "author": "Ali Tabatabaei",
+  "license": "ISC",
+  "dependencies": {
+    "city-to-coords": "^1.1.0",
+    "dotenv": "^5.0.1",
+    "telegraf": "^3.20.0"
+  }
+}

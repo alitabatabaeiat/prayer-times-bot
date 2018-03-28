@@ -4,41 +4,42 @@ const {Extra, Markup} = Telegraf;
 const {messages, actions} = require('./string');
 const {PrayTimes} = require('./praytimes');
 const getCoords = require('city-to-coords');
+const nodeGeocoder = require('node-geocoder');
+const actionCtrl = require('./controllers/action');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-const defaultKeyboard = Extra.HTML().markup((m =>
-        m.inlineKeyboard([
-            m.callbackButton('اوقات شرعی امروز', actions.today)
-        ])
-));
+bot.start(actionCtrl.start);
 
-const returnKeyboard = Extra.HTML().markup((m =>
-        m.inlineKeyboard([
-            m.callbackButton('بازگشت', actions.return)
-        ])
-));
+bot.hears(messages.owghatButton, actionCtrl.getOwghat);
+bot.hears(messages.returnButton, actionCtrl.return);
 
-bot.start(ctx => ctx.reply(messages.start(ctx), defaultKeyboard));
+bot.hears(messages.basedOnLocationButton, actionCtrl.getLocation);
 
-bot.action(actions.today, ctx => {
-
+bot.on('location', ctx => {
     let method = 'Tehran';
     let date = new Date();
-    let city = 'Tehran';
-    getCoords(city)
-        .then(result => {
-            let coords = [result.lat, result.lng];
-            let pt = new PrayTimes(method);
-            let times = pt.getTimes(date, coords);
-            console.log(messages.prayTimes(times))
-            ctx.editMessageText(messages.prayTimes(times), returnKeyboard);
-        });
+    let {latitude, longitude} = ctx.message.location;
+    let coords = [latitude, longitude];
+    let pt = new PrayTimes(method);
+    let times = pt.getTimes(date, coords);
 
-});
 
-bot.action(actions.return, ctx => {
-    ctx.editMessageText(messages.start(ctx), defaultKeyboard);
+    let options = {
+        provider: 'google',
+
+        // Optional depending on the providers
+        httpAdapter: 'https', // Default
+        apiKey: process.env.GOOGLE_GEOCODER, // for Mapquest, OpenCage, Google Premier
+        formatter: null         // 'gpx', 'string', ...
+    };
+
+    let geocoder = nodeGeocoder(options);
+    geocoder.reverse({lat:latitude, lon:longitude}, function(err, res) {
+        let city = res[0].city;
+        ctx.replyWithHTML(messages.prayTimes(times, city), Markup.keyboard([Markup.button(messages.owghatButton)]).resize().extra());
+    });
+
 });
 
 bot.startPolling();

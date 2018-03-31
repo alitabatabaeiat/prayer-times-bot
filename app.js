@@ -1,45 +1,37 @@
 require('dotenv').config();
 const Telegraf = require('telegraf');
-const {Extra, Markup} = Telegraf;
-const {messages, actions} = require('./string');
-const {PrayTimes} = require('./praytimes');
-const getCoords = require('city-to-coords');
-const nodeGeocoder = require('node-geocoder');
-const actionCtrl = require('./controllers/action');
+const LocalSession = require('telegraf-session-local');
+const {buttons} = require('./string');
+const hearsCtrl = require('./controllers/hears');
+const eventCtrl = require('./controllers/event');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-bot.start(actionCtrl.start);
+bot.use((new LocalSession({ database: 'example_db.json' })).middleware());
 
-bot.hears(messages.owghatButton, actionCtrl.getOwghat);
-bot.hears(messages.returnButton, actionCtrl.return);
-
-bot.hears(messages.basedOnLocationButton, actionCtrl.getLocation);
-
-bot.on('location', ctx => {
-    let method = 'Tehran';
-    let date = new Date();
-    let {latitude, longitude} = ctx.message.location;
-    let coords = [latitude, longitude];
-    let pt = new PrayTimes(method);
-    let times = pt.getTimes(date, coords);
-
-
-    let options = {
-        provider: 'google',
-
-        // Optional depending on the providers
-        httpAdapter: 'https', // Default
-        apiKey: process.env.GOOGLE_GEOCODER, // for Mapquest, OpenCage, Google Premier
-        formatter: null         // 'gpx', 'string', ...
+bot.use((ctx, next) => {
+    ctx.session = {
+        id: ctx.from.id,
+        username: ctx.from.username,
+        default: ctx.session.default || {},
+        last_config: ctx.session.last_config || {}
     };
-
-    let geocoder = nodeGeocoder(options);
-    geocoder.reverse({lat:latitude, lon:longitude}, function(err, res) {
-        let city = res[0].city;
-        ctx.replyWithHTML(messages.prayTimes(times, city), Markup.keyboard([Markup.button(messages.owghatButton)]).resize().extra());
-    });
-
+    next(ctx);
 });
+
+bot.start(hearsCtrl.start);
+
+bot.on('message',(ctx, next) => {
+    if (ctx.from.id !== parseInt(process.env.OWNER_ID))
+        ctx.telegram.forwardMessage(process.env.OWNER_ID, ctx.chat.id, ctx.message.message_id);
+    next(ctx);
+});
+
+bot.hears(buttons.go_home, hearsCtrl.go_home);
+bot.hears(buttons.owghat, hearsCtrl.get_owghat);
+bot.hears(buttons.make_default, hearsCtrl.make_default);
+bot.hears(buttons.another_city, hearsCtrl.another_city);
+
+bot.on('location', eventCtrl.on_location);
 
 bot.startPolling();

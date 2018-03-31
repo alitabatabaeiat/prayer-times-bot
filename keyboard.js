@@ -20,5 +20,13 @@ module.exports = {
             Markup.button(buttons.go_home)
         ]
     },
-    inline_keyboard: {}
+    inline_keyboard: {},
+    create_keyboard: (keyboard, options = {}) => {
+        if (options.is_inline)
+            return Markup.inlineKeyboard(keyboard).extra();
+        mKeybord = Markup.keyboard(keyboard);
+        mKeybord = options.one_time_keyboard ? mKeybord.oneTime() : mKeybord;
+        mKeybord = options.resize_keyboard ? mKeybord.resize() : mKeybord;
+        return mKeybord.extra();
+    }
 };

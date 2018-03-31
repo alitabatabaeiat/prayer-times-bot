@@ -1,4 +1,4 @@
-const {keyboard, inline_keyboard} = require('../keyboard');
+const {keyboard, inline_keyboard, create_keyboard} = require('../keyboard');
 const {messages, actions} = require('../string');
 const {Markup} = require('telegraf');
 const {PrayTimes} = require('../praytimes');
@@ -28,6 +28,6 @@ exports.on_location = ctx => {
             city,
             coords
         };
-        ctx.replyWithHTML(messages.pray_times(times, city), Markup.keyboard(keyboard.make_default_owghat).resize().extra());
+        ctx.replyWithHTML(messages.pray_times(times, city), create_keyboard(keyboard.make_default_owghat, {resize_keyboard: true}));
     });
 };

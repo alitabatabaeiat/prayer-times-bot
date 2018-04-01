@@ -15,7 +15,7 @@ exports.get_owghat = ctx => {
     if (!def.city)
         ctx.reply(message.specify_city, create_keyboard(keyboard.get_location, {resize_keyboard: true}));
     else {
-        let times = new PrayTimes(def.method).getTimes(new Date(), def.coords);
+        let times = new PrayTimes(def.method).getTimes(new Date(ctx.message.date * 1000), def.coords);
         ctx.replyWithHTML(message.pray_times(times, def.city),create_keyboard(keyboard.owghat_recieved, {resize_keyboard: true}));
     }
 };

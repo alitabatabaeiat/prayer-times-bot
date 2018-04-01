@@ -15,7 +15,7 @@ exports.on_location = ctx => {
     let method = 'Tehran',
         {latitude, longitude} = ctx.message.location,
         coords = [latitude, longitude],
-        times = new PrayTimes(method).getTimes(new Date(), coords);
+        times = new PrayTimes(method).getTimes(new Date(ctx.message.date * 1000), coords);
 
     geocoder.reverse({lat: latitude, lon: longitude}, function (err, res) {
         if (err) {

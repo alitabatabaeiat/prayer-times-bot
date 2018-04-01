@@ -4,8 +4,9 @@
   "description": "A Telegram Bot to show you pray times",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --ignore example_db.json app.js"
+    "start": "node app.js",
+    "dev": "nodemon --ignore example_db.json app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "Telegram",

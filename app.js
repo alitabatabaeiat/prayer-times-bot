@@ -9,7 +9,7 @@ const http = require('http');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-bot.use((new LocalSession({ database: 'example_db.json' })).middleware());
+bot.use((new LocalSession()).middleware());
 
 bot.use((ctx, next) => {
     ctx.session = session_constructor(ctx);

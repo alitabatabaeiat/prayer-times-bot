@@ -5,6 +5,7 @@ const {button, action} = require('./string');
 const hearsCtrl = require('./controllers/hears');
 const eventCtrl = require('./controllers/event');
 const actionCtrl = require('./controllers/action');
+const http = require('http');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -53,3 +54,9 @@ let session_constructor = (ctx) => {
         last_message: ''
     });
 };
+
+http.createServer((req, res) => {
+    res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.write('Hello World!');
+    res.end();
+}).listen(process.env.PORT || 8080);

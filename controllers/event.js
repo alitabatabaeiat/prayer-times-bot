@@ -2,6 +2,8 @@ const {keyboard, create_keyboard} = require('../keyboard');
 const {message} = require('../string');
 const {PrayTimes} = require('../praytimes');
 const nodeGeocoder = require('node-geocoder');
+const timezone = require('node-google-timezone');
+
 const options = {
     provider: 'google',
     httpAdapter: 'https',
@@ -14,19 +16,28 @@ const geocoder = nodeGeocoder(options);
 exports.on_location = ctx => {
     let method = 'Tehran',
         {latitude, longitude} = ctx.message.location,
-        coords = [latitude, longitude],
-        times = new PrayTimes(method).getTimes(new Date(ctx.message.date * 1000), coords);
+        coords = [latitude, longitude];
+
 
     geocoder.reverse({lat: latitude, lon: longitude}, function (err, res) {
-        if (err) {
+        if (err)
             ctx.reply('error on server');
-        }
+
         let city = res[0].city;
-        ctx.session.last_config = {
-            method,
-            city,
-            coords
-        };
-        ctx.replyWithHTML(message.pray_times(times, city), create_keyboard(keyboard.make_default_owghat, {resize_keyboard: true}));
+        timezone.data(coords[0], coords[1], new Date().getTime() / 1000, (err, tz) => {
+            let {dstOffset, rawOffset} = tz.raw_response;
+            rawOffset /= 3600;
+            dstOffset /= 3600;
+            ctx.session.last_config = {
+                method,
+                city,
+                coords,
+                raw_offset: rawOffset,
+                dst_offset: dstOffset
+            };
+
+            let times = new PrayTimes(method).getTimes(new Date(), coords, rawOffset, dstOffset);
+            ctx.replyWithHTML(message.pray_times(times, city), create_keyboard(keyboard.make_default_owghat, {resize_keyboard: true}));
+        });
     });
 };

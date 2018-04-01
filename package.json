@@ -20,6 +20,7 @@
     "city-to-coords": "^1.1.0",
     "dotenv": "^5.0.1",
     "node-geocoder": "^3.22.0",
+    "node-google-timezone": "^0.1.1",
     "telegraf": "^3.20.0",
     "telegraf-session-local": "0.0.4"
   }

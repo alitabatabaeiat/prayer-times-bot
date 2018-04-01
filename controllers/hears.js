@@ -11,12 +11,12 @@ exports.go_home = ctx => {
 };
 
 exports.get_owghat = ctx => {
-    let def = ctx.session.default;
-    if (!def.city)
+    let {city, method, coords, raw_offset, dst_offset} = ctx.session.default;
+    if (!city)
         ctx.reply(message.specify_city, create_keyboard(keyboard.get_location, {resize_keyboard: true}));
     else {
-        let times = new PrayTimes(def.method).getTimes(new Date(ctx.message.date * 1000), def.coords);
-        ctx.replyWithHTML(message.pray_times(times, def.city),create_keyboard(keyboard.owghat_recieved, {resize_keyboard: true}));
+        let times = new PrayTimes(method).getTimes(new Date(), coords, raw_offset, dst_offset);
+        ctx.replyWithHTML(message.pray_times(times, city),create_keyboard(keyboard.owghat_recieved, {resize_keyboard: true}));
     }
 };
 

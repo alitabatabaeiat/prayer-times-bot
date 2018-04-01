@@ -1,11 +1,11 @@
 require('dotenv').config();
 const Telegraf = require('telegraf');
 const LocalSession = require('telegraf-session-local');
+const http = require('http');
 const {button, action} = require('./string');
 const hearsCtrl = require('./controllers/hears');
 const eventCtrl = require('./controllers/event');
 const actionCtrl = require('./controllers/action');
-const http = require('http');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -19,7 +19,7 @@ bot.use((ctx, next) => {
 bot.start(hearsCtrl.start);
 
 // on
-bot.on('message',(ctx, next) => {
+bot.on('message', (ctx, next) => {
     if (ctx.from.id !== parseInt(process.env.OWNER_ID))
         ctx.telegram.forwardMessage(process.env.OWNER_ID, ctx.chat.id, ctx.message.message_id);
     next(ctx);

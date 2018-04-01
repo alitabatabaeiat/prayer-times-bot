@@ -1,3 +1,4 @@
+const schedule = require('node-schedule');
 const {inline_keyboard, create_keyboard} = require('../keyboard');
 const {message} = require('../string');
 
@@ -17,6 +18,10 @@ exports.settings = {
             ctx.session.last_message = message.settings.azan.sobh;
             ctx.session.settings.azan.sobh = !ctx.session.settings.azan.sobh && true;
             ctx.session.settings.azan.all = check_all(ctx.session.settings.azan);
+            if (!ctx.session.settings.azan.scheduled) {
+                schedule_azan(ctx);
+                ctx.session.settings.azan.scheduled = true;
+            }
         },
         zohr: ctx => {
             let {zohr} = ctx.session.settings.azan;
@@ -61,7 +66,14 @@ exports.return = ctx => {
     ctx.editMessageText('done'); // for test
 };
 
-let check_all = (azan) => {
+let check_all = azan => {
     let {sobh, zohr, maghreb} = azan;
     return sobh && zohr && maghreb;
+};
+
+let schedule_azan = ctx => {
+    const rule = new schedule.RecurrenceRule();
+    schedule.scheduleJob(rule, () => {
+
+    });
 };

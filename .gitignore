@@ -54,4 +54,4 @@ typings/
 # dotenv environment variables file
 .env
 .idea/
-example_db.json
+sessions.json

@@ -1,6 +1,5 @@
-const {keyboard, inline_keyboard, create_keyboard} = require('../keyboard');
-const {messages, actions} = require('../string');
-const {Markup} = require('telegraf');
+const {keyboard, create_keyboard} = require('../keyboard');
+const {message} = require('../string');
 const {PrayTimes} = require('../praytimes');
 const nodeGeocoder = require('node-geocoder');
 const options = {
@@ -28,6 +27,6 @@ exports.on_location = ctx => {
             city,
             coords
         };
-        ctx.replyWithHTML(messages.pray_times(times, city), create_keyboard(keyboard.make_default_owghat, {resize_keyboard: true}));
+        ctx.replyWithHTML(message.pray_times(times, city), create_keyboard(keyboard.make_default_owghat, {resize_keyboard: true}));
     });
 };

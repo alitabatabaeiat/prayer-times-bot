@@ -1,7 +1,6 @@
 require('dotenv').config();
 const Telegraf = require('telegraf');
-const LocalSession = require('telegraf-session-local');
-const http = require('http');
+const MySQLSession = require('telegraf-session-mysql');
 const {button, action} = require('./string');
 const hearsCtrl = require('./controllers/hears');
 const eventCtrl = require('./controllers/event');
@@ -9,7 +8,14 @@ const actionCtrl = require('./controllers/action');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-bot.use((new LocalSession()).middleware());
+const session = new MySQLSession({
+  host: process.env.SQL_HOST,
+  user: process.env.SQL_USER,
+  password: process.env.SQL_PASSWORD,
+  database: process.env.SQL_DB
+});
+
+bot.use(session.middleware());
 
 bot.use((ctx, next) => {
     ctx.session = session_constructor(ctx);
@@ -54,9 +60,3 @@ let session_constructor = (ctx) => {
         last_message: ''
     });
 };
-
-http.createServer((req, res) => {
-    res.writeHead(200, {'Content-Type': 'text/plain'});
-    res.write('Hello World!');
-    res.end();
-}).listen(process.env.PORT || 8080);

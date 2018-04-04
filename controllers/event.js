@@ -1,4 +1,4 @@
-const {keyboard, create_keyboard} = require('../keyboard');
+const {keyboard, inline_keyboard, create_keyboard, remove_keyboard} = require('../keyboard');
 const {message} = require('../string');
 const {PrayTimes} = require('../praytimes');
 const nodeGeocoder = require('node-geocoder');
@@ -8,7 +8,8 @@ const options = {
     provider: 'google',
     httpAdapter: 'https',
     apiKey: process.env.GOOGLE_GEOCODER,
-    formatter: null
+    formatter: null,
+    language: 'fa'
 };
 const geocoder = nodeGeocoder(options);
 
@@ -20,15 +21,21 @@ exports.on_location = ctx => {
 
 
     geocoder.reverse({lat: latitude, lon: longitude}, function (err, res) {
-        if (err)
-            ctx.reply('error on server');
+        if (err) {
+            ctx.reply(message.error, create_keyboard(inline_keyboard.start, {inline_keyboard: true}));
+            return;
+        }
 
         let city = res[0].city;
         timezone.data(coords[0], coords[1], new Date().getTime() / 1000, (err, tz) => {
+            if (err) {
+                ctx.reply(message.error, create_keyboard(inline_keyboard.start, {inline_keyboard: true}));
+                return;
+            }
             let {dstOffset, rawOffset} = tz.raw_response;
             rawOffset /= 3600;
             dstOffset /= 3600;
-            ctx.session.last_config = {
+            ctx.session.default_config = {
                 method,
                 city,
                 coords,
@@ -36,8 +43,8 @@ exports.on_location = ctx => {
                 dst_offset: dstOffset
             };
 
-            let times = new PrayTimes(method).getTimes(new Date(), coords, rawOffset, dstOffset);
-            ctx.replyWithHTML(message.pray_times(times, city), create_keyboard(keyboard.make_default_owghat, {resize_keyboard: true}));
+            ctx.reply(message.location_saved, remove_keyboard());
+            ctx.reply(message.what_next, create_keyboard(inline_keyboard.home, {inline_keyboard: true}));
         });
     });
 };

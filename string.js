@@ -1,9 +1,14 @@
+const {province, cities} = require('./iran');
+
 module.exports = {
     message: {
         start: (first_name) => {
-            return 'سلام ' + first_name + '!\n' + 'خوش اومدی!\n' + 'چه کاری از دستم برات برمیاد؟'
+            return 'سلام ' + first_name + '!\n' + 'خوش اومدی!\n' + 'برای اینکه بخوای از بات استفاده کنی اول باید یک موقعیت پیشفرض رو برای من مشخص کنی!\nموقعیت جغرافیاییت رو برای من ارسال کن یا یکی از شهر ها رو انتخاب کن!'
         },
-        home: 'در صفحه اصلی هستی!\nچه کاری ازم برات برمیاد؟',
+        send_location: 'با انتخاب ' + '<b>' + 'گزینه زیر' + '</b>' + ' موقعیت جغرافیایی خود را ارسال کنید.',
+        error: 'خطا! لطفا دوباره تلاش کنید.',
+        what_next: 'چیکار میتونم برات بکنم؟',
+        // home: 'در صفحه اصلی هستی!\nچه کاری ازم برات برمیاد؟',
         specify_city: 'شهر خود را مشخص کنید',
         pray_times: (times, city) => {
             return 'اوقات شرعی امروز ' + city + ':\n\n' +
@@ -15,7 +20,7 @@ module.exports = {
                 '<b>' + 'نیمه شب شرعی: ' + '</b>' + times.midnight + '\n\n' +
                 'دیگه چه کاری میتونم برات انجام بدم؟'
         },
-        saved: 'اطلاعات ذخیره شد',
+        location_saved: 'موقعیت با موفقیت ذخیره شد.',
         settings: {
             start: 'خب! چه چیزی رو میخوای تنظیم کنی؟',
             azan: {
@@ -52,7 +57,7 @@ module.exports = {
                     return 'ظهر: ' + is_active(active)
                 },
                 maghreb: active => {
-                    return 'عصر: ' + is_active(active)
+                    return 'مغرب: ' + is_active(active)
                 },
                 all: active => {
                     return (is_active(!active) + ' کردن همه')
@@ -67,7 +72,29 @@ module.exports = {
         return: 'بازگشت'
     },
     action: {
+        start: {
+            choose_city: 'start_choose_city',
+            send_location: 'start_send_location',
+            province: () => {
+                let array = [];
+                for (p in province)
+                    array.push(p);
+                return array;
+            },
+            city: () => {
+                let array = [];
+                for (p in province) {
+                    let city = cities(p);
+                    for (c in city)
+                        array.push(c);
+                }
+                return array;
+            }
+        },
+        get_owghat: 'get_owghat',
+        another_city: 'another_city',
         settings: {
+            start: 'start_settings',
             azan: {
                 start: 'notif_azan',
                 sobh: 'azan_sobh',
@@ -77,7 +104,7 @@ module.exports = {
             },
             ghaza: 'remind_ghaza',
         },
-        return: 'ret'
+        return: 'return'
     },
     equals: {
         sobh: 'صبح',

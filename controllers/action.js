@@ -24,11 +24,11 @@ let start = {
         ctx.editMessageText('استان مورد نظر را انتخاب کنید.', create_keyboard(inline_keyboard.select_province(), {inline_keyboard: true}));
     },
     province: ctx => {
-        ctx.editMessageText('شهر مورد نظر را انتخاب کنید.', create_keyboard(inline_keyboard.select_city(ctx.match), {inline_keyboard: true}));
+        ctx.editMessageText('شهر مورد نظر را انتخاب کنید.', create_keyboard(inline_keyboard.select_city(ctx.update.callback_query.data), {inline_keyboard: true}));
     },
     city: ctx => {
         let method = 'Tehran',
-            city = ctx.match
+            city = ctx.match;
         geocoder.geocode(city, (err, res) => {
             if (err) {
                 ctx.reply(message.error, create_keyboard(inline_keyboard.start, {inline_keyboard: true}));
@@ -60,7 +60,6 @@ let start = {
 
 let get_owghat = ctx => {
     let {city, method, coords, raw_offset, dst_offset} = ctx.session.default_config;
-    console.log(coords);
     let times = new PrayTimes(method).getTimes(new Date(), coords, raw_offset, dst_offset);
     ctx.editMessageText(message.pray_times(times, city), create_keyboard(inline_keyboard.owghat_recieved, {
         inline_keyboard: true,

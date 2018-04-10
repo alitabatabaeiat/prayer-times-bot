@@ -44,15 +44,12 @@ module.exports = {
         select_province: () => {
             let keyboard = [];
             let row = [];
-            let counter = 0;
 
-            for (let p in province) {
-                row.push(Markup.callbackButton(province[p], p));
-                counter++;
-                if (counter === 3) {
+            for (let i = 0; i < province.length; i++) {
+                row.push(Markup.callbackButton(province[i], "province_" + i));
+                if (i % 3 === 2) {
                     keyboard.push(row);
                     row = [];
-                    counter = 0;
                 }
             }
             return keyboard;
@@ -61,7 +58,7 @@ module.exports = {
             let keyboard = [];
             let row = [];
             let counter = 0;
-            let city = cities(province);
+            let city = cities(parseInt(province.split("_")[1]));
 
             for (let c in city) {
                 row.push(Markup.callbackButton(city[c], c));

@@ -19,6 +19,7 @@ const session = new MySQLSession({
 bot.use(session.middleware());
 
 bot.use((ctx, next) => {
+    console.log(ctx.from);
     if (ctx.from.id === parseInt(process.env.OWNER_ID))
         next(ctx);
     else {

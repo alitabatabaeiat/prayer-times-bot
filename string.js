@@ -76,15 +76,15 @@ module.exports = {
             choose_city: 'start_choose_city',
             send_location: 'start_send_location',
             province: () => {
-                let array = [];
-                for (p in province)
-                    array.push(p);
-                return array;
+                let p = [];
+                for (let i = 0; i < province.length; i++)
+                    p.push("province_" + i);
+                return p;
             },
             city: () => {
                 let array = [];
-                for (p in province) {
-                    let city = cities(p);
+                for (let i = 0; i < province.length; i++) {
+                    let city = cities(i);
                     for (c in city)
                         array.push(c);
                 }

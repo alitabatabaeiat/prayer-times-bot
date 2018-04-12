@@ -72,7 +72,7 @@ let get_owghat = ctx => {
 };
 
 let change_city = ctx => {
-    ctx.reply(message.inactive, create_keyboard(inline_keyboard.home, {resize_keyboard: true}))
+    ctx.reply(message.inactive, create_keyboard(inline_keyboard.home, {inline_keyboard: true}))
 };
 
 let settings = {

@@ -59,21 +59,25 @@ let start = {
 
 
 let get_owghat = ctx => {
+    console.log(ctx.session)
     let {city, method, coords, raw_offset, dst_offset} = ctx.session.default_config;
     let times = new PrayTimes(method).getTimes(new Date(), coords, raw_offset, dst_offset);
+
     ctx.editMessageText(message.pray_times(times, city), create_keyboard(inline_keyboard.owghat_recieved, {
         inline_keyboard: true,
         extra: {parse_mode: 'HTML'}
     }));
+
     ctx.session.current_action = action.get_owghat;
 };
 
-let another_city = ctx => {
-    ctx.reply(message.start(ctx.from.first_name), create_keyboard(keyboard.start, {resize_keyboard: true}))
+let change_city = ctx => {
+    ctx.reply(message.inactive, create_keyboard(inline_keyboard.home, {resize_keyboard: true}))
 };
 
 let settings = {
     start: ctx => {
+        console.log(inline_keyboard.settings.start)
         ctx.editMessageText(message.settings.start, create_keyboard(inline_keyboard.settings.start, {inline_keyboard: true}));
         ctx.session.current_action = action.settings.start;
     },
@@ -133,7 +137,11 @@ let settings = {
             schedule_azan(ctx);
         }
     },
-    ghaza: {}
+    ghaza: {
+        start: ctx => {
+            ctx.editMessageText(message.inactive, create_keyboard(inline_keyboard.home), {inline_keyboard: true});
+        }
+    }
 };
 
 let ret = ctx => {
@@ -214,6 +222,6 @@ let schedule_on_time = (ctx, time, schedule_name, azan_name, city) => {
 
 exports.start = start;
 exports.get_owghat = get_owghat;
-exports.another_city = another_city;
+exports.change_city = change_city;
 exports.settings = settings;
 exports.return = ret;

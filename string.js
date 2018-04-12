@@ -2,6 +2,9 @@ const {province, cities} = require('./iran');
 
 module.exports = {
     message: {
+
+        inactive: 'با عرض پوزش در حال حاضر غیرفعال!\n\nچه کمکی از من برمیاد؟', // dev
+
         start: (first_name) => {
             return 'سلام ' + first_name + '!\n' + 'خوش اومدی!\n' + 'برای اینکه بخوای از بات استفاده کنی اول باید یک موقعیت پیشفرض رو برای من مشخص کنی!\nموقعیت جغرافیاییت رو برای من ارسال کن یا یکی از شهر ها رو انتخاب کن!'
         },
@@ -63,12 +66,14 @@ module.exports = {
                     return (is_active(!active) + ' کردن همه')
                 }
             },
-            ghaza: 'یادآوری نماز',
+            ghaza: {
+                start: 'یادآوری نماز'
+            },
         },
         send_location: '🗺 ارسال موقعیت',
         choose_city: '🏙 انتخاب شهر',
         make_default: '💾 ذخیره اطلاعات',
-        another_city: '🏙 شهر دیگر',
+        change_city: '🏙 شهر دیگر',
         return: 'بازگشت'
     },
     action: {
@@ -92,7 +97,7 @@ module.exports = {
             }
         },
         get_owghat: 'get_owghat',
-        another_city: 'another_city',
+        change_city: 'change_city',
         settings: {
             start: 'start_settings',
             azan: {
@@ -102,7 +107,9 @@ module.exports = {
                 maghreb: 'azan_maghreb',
                 all: 'azan_all'
             },
-            ghaza: 'remind_ghaza',
+            ghaza: {
+                start: 'remind_ghaza'
+            },
         },
         return: 'return'
     },

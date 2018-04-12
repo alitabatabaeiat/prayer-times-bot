@@ -18,12 +18,12 @@ module.exports = {
         ],
         owghat_recieved: [
             Markup.callbackButton(button.return, action.return),
-            Markup.callbackButton(button.another_city, action.another_city)
+            Markup.callbackButton(button.change_city, action.change_city)
         ],
         settings: {
             start: [
                 [
-                    Markup.callbackButton(button.settings.ghaza, action.settings.ghaza),
+                    Markup.callbackButton(button.settings.ghaza.start, action.settings.ghaza.start),
                     Markup.callbackButton(button.settings.azan.start, action.settings.azan.start)
                 ],
                 [Markup.callbackButton(button.return, action.return)]
@@ -44,9 +44,10 @@ module.exports = {
         select_province: () => {
             let keyboard = [];
             let row = [];
+            let p = action.start.province();
 
             for (let i = 0; i < province.length; i++) {
-                row.push(Markup.callbackButton(province[i], "province_" + i));
+                row.push(Markup.callbackButton(province[i], p[i]));
                 if (i % 3 === 2) {
                     keyboard.push(row);
                     row = [];

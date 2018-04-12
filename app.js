@@ -71,9 +71,9 @@ let session_constructor = ctx => {
         id: ctx.from.id,
         username: ctx.from.username,
         default_config: s.default_config || {},
-        settings: {
-            azan: s.settings.azan || {},
-            ghaza: s.settings.ghaza || {}
+        settings: s.settings || {
+            azan: {},
+            ghaza: {}
         },
         current_action: s.current_action || ''
     };

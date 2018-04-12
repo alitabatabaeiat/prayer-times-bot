@@ -59,7 +59,6 @@ let start = {
 
 
 let get_owghat = ctx => {
-    console.log(ctx.session)
     let {city, method, coords, raw_offset, dst_offset} = ctx.session.default_config;
     let times = new PrayTimes(method).getTimes(new Date(), coords, raw_offset, dst_offset);
 
@@ -72,12 +71,12 @@ let get_owghat = ctx => {
 };
 
 let change_city = ctx => {
+    ctx.editMessageReplyMarkup(Markup);
     ctx.reply(message.inactive, create_keyboard(inline_keyboard.home, {inline_keyboard: true}))
 };
 
 let settings = {
     start: ctx => {
-        console.log(inline_keyboard.settings.start)
         ctx.editMessageText(message.settings.start, create_keyboard(inline_keyboard.settings.start, {inline_keyboard: true}));
         ctx.session.current_action = action.settings.start;
     },
@@ -145,9 +144,11 @@ let settings = {
 };
 
 let ret = ctx => {
-    console.log(ctx.session.current_action);
     switch (ctx.session.current_action) {
         case action.get_owghat:
+            ctx.editMessageReplyMarkup(Markup);
+            ctx.reply(message.what_next, create_keyboard(inline_keyboard.home, {inline_keyboard: true}));
+            break;
         case action.settings.start:
             ctx.editMessageText(message.what_next, create_keyboard(inline_keyboard.home, {inline_keyboard: true}));
             break;

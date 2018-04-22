@@ -8,11 +8,11 @@ module.exports = {
         start: (first_name) => {
             return 'سلام ' + first_name + '!\n' + 'خوش اومدی!\n' + 'برای اینکه بخوای از بات استفاده کنی اول باید یک موقعیت پیشفرض رو برای من مشخص کنی!\nموقعیت جغرافیاییت رو برای من ارسال کن یا یکی از شهر ها رو انتخاب کن!'
         },
-        send_location: 'با انتخاب ' + '<b>' + 'گزینه زیر' + '</b>' + ' موقعیت جغرافیایی خود را ارسال کنید.',
         error: 'خطا! لطفا دوباره تلاش کنید.',
-        what_next: 'چیکار میتونم برات بکنم؟',
-        // home: 'در صفحه اصلی هستی!\nچه کاری ازم برات برمیاد؟',
-        specify_city: 'شهر خود را مشخص کنید',
+        // what_next: 'چیکار میتونم برات انجام بدم؟',
+        home: 'در صفحه اصلی هستی!\nچه کاری ازم برات برمیاد؟',
+        select_province: 'استان مورد نظر را انتخاب کنید.',
+        select_city: 'شهر مورد نظر را انتخاب کنید.',
         pray_times: (times, city) => {
             return 'اوقات شرعی امروز ' + city + ':\n\n' +
                 '<b>' + 'اذان صبح: ' + '</b>' + times.fajr + '\n' +
@@ -23,7 +23,6 @@ module.exports = {
                 '<b>' + 'نیمه شب شرعی: ' + '</b>' + times.midnight + '\n\n' +
                 'دیگه چه کاری میتونم برات انجام بدم؟'
         },
-        location_saved: 'موقعیت با موفقیت ذخیره شد.',
         settings: {
             start: 'خب! چه چیزی رو میخوای تنظیم کنی؟',
             azan: {
@@ -47,8 +46,21 @@ module.exports = {
         }
     },
     button: {
+        send_location: '🗺 ارسال موقعیت',
+        select_city: '🏙 انتخاب شهر',
+        provinces: province,
+        all_cities: () => {
+            let array = [];
+            for (let i = 0; i < province.length; i++) {
+                let city = cities(i);
+                for (c in city)
+                    if (city.hasOwnProperty(c))
+                        array.push(c);
+            }
+            return array;
+        },
+        get_owghat: '🕌 اوقات شرعی',
         go_home: '🏠 خانه',
-        owghat: '🕌 اوقات شرعی',
         settings: {
             start: '⚙️ تنظیمات',
             azan: {
@@ -70,34 +82,11 @@ module.exports = {
                 start: 'یادآوری نماز'
             },
         },
-        send_location: '🗺 ارسال موقعیت',
-        choose_city: '🏙 انتخاب شهر',
         make_default: '💾 ذخیره اطلاعات',
         change_city: '🏙 شهر دیگر',
-        return: 'بازگشت'
+        return: '🔙 بازگشت'
     },
     action: {
-        start: {
-            choose_city: 'start_choose_city',
-            send_location: 'start_send_location',
-            province: () => {
-                let p = [];
-                for (let i = 0; i < province.length; i++)
-                    p.push("province_" + i);
-                return p;
-            },
-            city: () => {
-                let array = [];
-                for (let i = 0; i < province.length; i++) {
-                    let city = cities(i);
-                    for (c in city)
-                        array.push(c);
-                }
-                return array;
-            }
-        },
-        get_owghat: 'get_owghat',
-        change_city: 'change_city',
         settings: {
             start: 'start_settings',
             azan: {

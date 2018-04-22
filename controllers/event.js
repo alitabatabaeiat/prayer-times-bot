@@ -43,8 +43,8 @@ exports.on_location = ctx => {
                 dst_offset: dstOffset
             };
 
-            ctx.reply(message.location_saved, remove_keyboard());
-            ctx.reply(message.what_next, create_keyboard(inline_keyboard.home, {inline_keyboard: true}));
+            ctx.reply(message.location_saved + message.what_next,
+                create_keyboard(keyboard.home, {resize_keyboard: true}));
         });
     });
 };

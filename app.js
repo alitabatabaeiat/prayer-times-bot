@@ -1,13 +1,15 @@
 require('dotenv').config();
 const Telegraf = require('telegraf');
-const MySQLSession = require('telegraf-session-mysql');
+const MySQLSession = require('./session');
+const {state} = require('./state');
 const {button, action} = require('./string');
 const commandCtrl = require('./controllers/command');
-const hearsCtrl = require('./controllers/hears');
 const eventCtrl = require('./controllers/event');
 const actionCtrl = require('./controllers/action');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
+
+const hearsCtrl = require('./controllers/hears')(bot);
 
 const session = new MySQLSession({
     host: process.env.SQL_HOST,
@@ -15,6 +17,12 @@ const session = new MySQLSession({
     password: process.env.SQL_PASSWORD,
     database: process.env.SQL_DB
 });
+
+// session.getSessions().then(sessions => {
+//    for (let key in sessions) {
+//        console.log(sessions[key])
+//    }
+// });
 
 bot.use(session.middleware());
 
@@ -38,30 +46,29 @@ bot.on('message', (ctx, next) => {
 bot.on('location', eventCtrl.on_location);
 
 // start
-bot.action(action.start.send_location, actionCtrl.start.send_location);
-bot.action(action.start.choose_city, actionCtrl.start.choose_city);
-bot.action(action.start.province(), actionCtrl.start.province);
-bot.action(action.start.city(), actionCtrl.start.city);
-
-
+bot.hears(button.select_city, hearsCtrl.start.select_province);
+bot.hears(button.provinces, hearsCtrl.start.select_city);
+bot.hears(button.all_cities(), hearsCtrl.start.city_selected);
+//
+//
 // get_owghat
-bot.action(action.get_owghat, actionCtrl.get_owghat);
-bot.action(action.change_city, actionCtrl.change_city);
-
-// settings
-bot.action(action.settings.start, actionCtrl.settings.start);
-
-bot.action(action.settings.azan.start, actionCtrl.settings.azan.start);
-bot.action(action.settings.azan.sobh, actionCtrl.settings.azan.sobh);
-bot.action(action.settings.azan.zohr, actionCtrl.settings.azan.zohr);
-bot.action(action.settings.azan.maghreb, actionCtrl.settings.azan.maghreb);
-bot.action(action.settings.azan.all, actionCtrl.settings.azan.all);
-
-bot.action(action.settings.ghaza.start, actionCtrl.settings.ghaza.start);
-
-
+bot.hears(button.get_owghat, hearsCtrl.get_owghat);
+bot.action(button.change_city, hearsCtrl.change_city);
+//
+// // settings
+// bot.action(action.settings.start, actionCtrl.settings.start);
+//
+// bot.action(action.settings.azan.start, actionCtrl.settings.azan.start);
+// bot.action(action.settings.azan.sobh, actionCtrl.settings.azan.sobh);
+// bot.action(action.settings.azan.zohr, actionCtrl.settings.azan.zohr);
+// bot.action(action.settings.azan.maghreb, actionCtrl.settings.azan.maghreb);
+// bot.action(action.settings.azan.all, actionCtrl.settings.azan.all);
+//
+// bot.action(action.settings.ghaza.start, actionCtrl.settings.ghaza.start);
+//
+//
 // return
-bot.action(action.return, actionCtrl.return);
+bot.hears(button.return, hearsCtrl.return);
 
 bot.startPolling();
 
@@ -75,6 +82,6 @@ let session_constructor = ctx => {
             azan: {},
             ghaza: {}
         },
-        current_action: s.current_action || ''
+        state: s.state || -1
     };
 };

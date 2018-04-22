@@ -23,7 +23,7 @@ class MySQLSession {
     }
 
     getSessions() {
-        this.client.query('SELECT * FROM sessions')
+        return this.client.query('SELECT * FROM sessions')
             .then((json) => {
                 debug('select query', json);
                 let session = {};
@@ -40,7 +40,6 @@ class MySQLSession {
                 }
                 return sessions
             });
-        return x;
     }
 
     getSession(key) {
@@ -65,7 +64,6 @@ class MySQLSession {
                 sessions[key] = session;
                 return session
             });
-        console.log(x);
         return x;
     }
 
@@ -88,7 +86,6 @@ class MySQLSession {
             if (!key) {
                 return next()
             }
-            console.log(sessions);
             debug('session key %s', key);
             return this.getSession(key).then(() => {
                 debug('session value', sessions[key]);

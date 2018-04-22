@@ -2,24 +2,55 @@ const {Markup} = require('telegraf');
 const {button, action} = require('./string');
 const {province, cities} = require('./iran');
 
-
 module.exports = {
     keyboard: {
-        send_location: [Markup.locationRequestButton(button.send_location)],
-    },
-    inline_keyboard: {
         start: [
-            Markup.callbackButton(button.send_location, action.start.send_location),
-            Markup.callbackButton(button.choose_city, action.start.choose_city),
+            Markup.button(button.select_city),
+            Markup.locationRequestButton(button.send_location)
         ],
         home: [
-            Markup.callbackButton(button.settings.start, action.settings.start),
-            Markup.callbackButton(button.owghat, action.get_owghat)
+            Markup.button(button.get_owghat),
+            Markup.button(button.settings.start)
         ],
+        select_province: () => {
+            let keyboard = [[Markup.button(button.return)]];
+            let row = [];
+            let p = button.provinces;
+
+            for (let i = 0; i < button.provinces.length; i++) {
+                row.push(Markup.button(button.provinces[i]));
+                if (i % 3 === 2) {
+                    keyboard.push(row);
+                    row = [];
+                }
+            }
+            return keyboard;
+        },
+        select_city: selected_province => {
+            const index = province.indexOf(selected_province);
+            const cities_of_province = cities(index);
+            let cities_array = [];
+            for (let c in cities_of_province)
+                if (cities_of_province.hasOwnProperty(c))
+                    cities_array.push(cities_of_province[c]);
+            let keyboard = [[Markup.button(button.return)]];
+            let row = [];
+
+            for (let i = 0; i < cities_array.length; i++) {
+                row.push(Markup.button(cities_array[i]));
+                if (i % 3 === 2) {
+                    keyboard.push(row);
+                    row = [];
+                }
+            }
+            return keyboard;
+        },
         owghat_recieved: [
-            Markup.callbackButton(button.return, action.return),
-            Markup.callbackButton(button.change_city, action.change_city)
-        ],
+            Markup.button(button.change_city),
+            Markup.button(button.return)
+        ]
+    },
+    inline_keyboard: {
         settings: {
             start: [
                 [
@@ -41,20 +72,6 @@ module.exports = {
             }
         },
         return: [Markup.callbackButton(button.return, action.return)],
-        select_province: () => {
-            let keyboard = [];
-            let row = [];
-            let p = action.start.province();
-
-            for (let i = 0; i < province.length; i++) {
-                row.push(Markup.callbackButton(province[i], p[i]));
-                if (i % 3 === 2) {
-                    keyboard.push(row);
-                    row = [];
-                }
-            }
-            return keyboard;
-        },
         select_city: (province) => {
             let keyboard = [];
             let row = [];

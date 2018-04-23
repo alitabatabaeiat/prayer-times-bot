@@ -4,7 +4,7 @@ const {province, cities} = require('./iran');
 
 module.exports = {
     keyboard: {
-        start: [
+        location: [
             Markup.button(button.select_city),
             Markup.locationRequestButton(button.send_location)
         ],

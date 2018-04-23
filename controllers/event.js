@@ -1,8 +1,10 @@
+const {state} = require('../state');
 const {keyboard, inline_keyboard, create_keyboard, remove_keyboard} = require('../keyboard');
 const {message} = require('../string');
 const {PrayTimes} = require('../praytimes');
 const nodeGeocoder = require('node-geocoder');
 const timezone = require('node-google-timezone');
+const hearsCtrl = require('./hears');
 
 const options = {
     provider: 'google',
@@ -43,8 +45,16 @@ exports.on_location = ctx => {
                 dst_offset: dstOffset
             };
 
-            ctx.reply(message.location_saved + message.what_next,
-                create_keyboard(keyboard.home, {resize_keyboard: true}));
+            switch (ctx.session.state) {
+                case state.start:
+                    ctx.reply(message.home,
+                        create_keyboard(keyboard.home, {resize_keyboard: true}));
+                    ctx.session.state = state.send_location;
+                    break;
+                case state.change_city:
+                    hearsCtrl.get_owghat(ctx);
+                    break;
+            }
         });
     });
 };

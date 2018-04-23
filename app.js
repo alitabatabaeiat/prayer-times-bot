@@ -53,7 +53,7 @@ bot.hears(button.all_cities(), hearsCtrl.start.city_selected);
 //
 // get_owghat
 bot.hears(button.get_owghat, hearsCtrl.get_owghat);
-bot.action(button.change_city, hearsCtrl.change_city);
+bot.hears(button.change_city, hearsCtrl.change_city);
 //
 // // settings
 // bot.action(action.settings.start, actionCtrl.settings.start);
@@ -82,6 +82,6 @@ let session_constructor = ctx => {
             azan: {},
             ghaza: {}
         },
-        state: s.state || -1
+        state: s.state >= 0 ? s.state : -1
     };
 };

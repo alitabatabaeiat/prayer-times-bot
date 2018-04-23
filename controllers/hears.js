@@ -1,7 +1,7 @@
 const {state} = require('../state');
 const schedule = require('node-schedule');
 const {keyboard, inline_keyboard, create_keyboard} = require('../keyboard');
-const {message, action} = require('../string');
+const {message, button} = require('../string');
 const {PrayTimes} = require('../praytimes');
 const commandCtrl = require('./command');
 const {Markup} = require('telegraf');
@@ -22,17 +22,33 @@ module.exports = function (bot) {
 
     module.start = {
         select_province: ctx => {
-                ctx.reply(message.select_province,
-                    create_keyboard(keyboard.select_province(), {resize_keyboard: true}));
-                ctx.session.state = state.select_province;
+            ctx.reply(message.select_province,
+                create_keyboard(keyboard.select_province(), {resize_keyboard: true}));
+            switch (ctx.session.state) {
+                case state.start:
+                    ctx.session.state = state.select_province;
+                    break;
+                case state.change_city:
+                case state.change_city_select_city:
+                    ctx.session.state = state.change_city_select_province;
+                    break;
+            }
         },
         select_city: (ctx, next) => {
-            if (ctx.session.state === state.select_city)
+            if (ctx.session.state === state.select_city ||
+                ctx.session.state === state.change_city_select_city)
                 next();
             else {
                 ctx.reply(message.select_city,
                     create_keyboard(keyboard.select_city(ctx.message.text), {resize_keyboard: true}));
-                ctx.session.state = state.select_city;
+                switch (ctx.session.state) {
+                    case state.select_province:
+                        ctx.session.state = state.select_city;
+                        break;
+                    case state.change_city_select_province:
+                        ctx.session.state = state.change_city_select_city;
+                        break;
+                }
             }
         },
         city_selected: ctx => {
@@ -59,7 +75,14 @@ module.exports = function (bot) {
                         raw_offset: rawOffset,
                         dst_offset: dstOffset
                     };
-                    module.home(ctx);
+                    switch (ctx.session.state) {
+                        case state.select_city:
+                            module.home(ctx);
+                            break;
+                        case state.change_city_select_city:
+                            module.get_owghat(ctx);
+                            break;
+                    }
                 });
             });
 
@@ -83,11 +106,14 @@ module.exports = function (bot) {
     };
 
     module.change_city = ctx => {
-
+        let new_keyboard = keyboard.location.slice(0);
+        new_keyboard.push(Markup.button(button.return));
+        ctx.reply(message.change_city,
+            create_keyboard(new_keyboard, {resize_keyboard: true}));
+        ctx.session.state = state.change_city;
     };
 
     module.return = ctx => {
-        console.log(ctx.session.state);
         switch (ctx.session.state) {
             case state.select_province:
                 commandCtrl.start(ctx);
@@ -97,6 +123,15 @@ module.exports = function (bot) {
                 break;
             case state.get_owghat:
                 module.home(ctx);
+                break;
+            case state.change_city:
+                module.get_owghat(ctx);
+                break;
+            case state.change_city_select_province:
+                module.change_city(ctx);
+                break;
+            case state.change_city_select_city:
+                module.start.select_province(ctx);
                 break;
         }
     };

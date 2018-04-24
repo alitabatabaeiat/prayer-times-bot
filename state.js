@@ -9,4 +9,5 @@ exports.state = {
     change_city_select_province: 7,
     change_city_select_city: 8,
     change_city_send_location: 9,
+    azan_notif: 10
 };

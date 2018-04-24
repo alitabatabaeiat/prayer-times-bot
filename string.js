@@ -24,23 +24,20 @@ module.exports = {
                 'دیگه چه کاری میتونم برات انجام بدم؟'
         },
         change_city: 'شهر موردنظر را انتخاب کرده یا موقعیت جغرافیایی خود را برای من بفرستید!',
+        azan_notif: {
+            start: 'برای کدام یک از اذان ها میخوای اطلاع رسانی کنم؟',
+            sobh: active => {
+                return 'اطلاع رسانی برای <b>اذان صبح ' + `${is_active(!active)}` + ' شد.</b>'
+            },
+            zohr: active => {
+                return 'اطلاع رسانی برای <b>اذان ظهر ' + `${is_active(!active)}` + ' شد.</b>'
+            },
+            maghreb: active => {
+                return 'اطلاع رسانی برای <b>اذان مغرب ' + `${is_active(!active)}` + ' شد.</b>'
+            }
+        },
         settings: {
             start: 'خب! چه چیزی رو میخوای تنظیم کنی؟',
-            azan: {
-                start: 'برای کدام یک از اذان ها میخوای اطلاع رسانی کنم؟',
-                sobh: active => {
-                    return 'اطلاع رسانی برای اذان صبح ' + `<b>${is_active(!active)}</b>` + ' شد'
-                },
-                zohr: active => {
-                    return 'اطلاع رسانی برای اذان ظهر ' + `<b>${is_active(!active)}</b>` + ' شد'
-                },
-                maghreb: active => {
-                    return 'اطلاع رسانی برای اذان مغرب ' + `<b>${is_active(!active)}</b>` + ' شد'
-                },
-                all: active => {
-                    return 'اطلاع رسانی برای تمام اذان ها ' + `<b>${is_active(!active)}</b>` + ' شد.'
-                },
-            },
             ghaza: {
                 start: '',
             }
@@ -61,24 +58,24 @@ module.exports = {
             return array;
         },
         get_owghat: '🕌 اوقات شرعی',
+        azan_notif: {
+            start: '🕋 اطلاع رسانی اذان',
+            sobh: active => {
+                return 'صبح: ' + is_active(active)
+            },
+            zohr: active => {
+                return 'ظهر: ' + is_active(active)
+            },
+            maghreb: active => {
+                return 'مغرب: ' + is_active(active)
+            },
+            all: active => {
+                return (is_active(!active) + ' کردن همه')
+            }
+        },
         go_home: '🏠 خانه',
         settings: {
             start: '⚙️ تنظیمات',
-            azan: {
-                start: 'اطلاع رسانی اذان',
-                sobh: active => {
-                    return 'صبح: ' + is_active(active)
-                },
-                zohr: active => {
-                    return 'ظهر: ' + is_active(active)
-                },
-                maghreb: active => {
-                    return 'مغرب: ' + is_active(active)
-                },
-                all: active => {
-                    return (is_active(!active) + ' کردن همه')
-                }
-            },
             ghaza: {
                 start: 'یادآوری نماز'
             },
@@ -87,29 +84,17 @@ module.exports = {
         change_city: '🏙 شهر دیگر',
         return: '🔙 بازگشت'
     },
-    action: {
-        settings: {
-            start: 'start_settings',
-            azan: {
-                start: 'notif_azan',
-                sobh: 'azan_sobh',
-                zohr: 'azan_zohr',
-                maghreb: 'azan_maghreb',
-                all: 'azan_all'
-            },
-            ghaza: {
-                start: 'remind_ghaza'
-            },
-        },
-        return: 'return'
-    },
+    action: {},
     equals: {
         sobh: 'صبح',
         zohr: 'ظهر',
-        maghreb: 'مغرب'
-    }
+        maghreb: 'مغرب',
+        active: 'فعال',
+        inactive: 'غیرفعال'
+    },
+
 };
 
 let is_active = active => {
-    return (active ? 'فعال' : 'غیرفعال');
+    return (active ? module.exports.equals.active : module.exports.equals.inactive);
 };

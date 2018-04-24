@@ -113,6 +113,35 @@ module.exports = function (bot) {
         ctx.session.state = state.change_city;
     };
 
+    module.azan_notif = {
+        start: ctx => {
+            ctx.reply(message.azan_notif.start,
+                create_keyboard(keyboard.azan_notif.start(ctx.session.azan_notif), {resize_keyboard: true}));
+            ctx.session.state = state.azan_notif;
+        },
+        sobh: ctx => {
+            let {sobh} = ctx.session.azan_notif;
+            ctx.session.azan_notif.sobh = ctx.message.text.search('غیرفعال') !== -1;
+            ctx.replyWithHTML(message.azan_notif.sobh(sobh),
+                create_keyboard(keyboard.azan_notif.start(ctx.session.azan_notif), {resize_keyboard: true}));
+            ctx.session.state = state.azan_notif;
+        },
+        zohr: ctx => {
+            let {zohr} = ctx.session.azan_notif;
+            ctx.session.azan_notif.zohr = ctx.message.text.search('غیرفعال') !== -1;
+            ctx.replyWithHTML(message.azan_notif.zohr(zohr),
+                create_keyboard(keyboard.azan_notif.start(ctx.session.azan_notif), {resize_keyboard: true}));
+            ctx.session.state = state.azan_notif;
+        },
+        maghreb: ctx => {
+            let {maghreb} = ctx.session.azan_notif;
+            ctx.session.azan_notif.maghreb = ctx.message.text.search('غیرفعال') !== -1;
+            ctx.replyWithHTML(message.azan_notif.maghreb(maghreb),
+                create_keyboard(keyboard.azan_notif.start(ctx.session.azan_notif), {resize_keyboard: true}));
+            ctx.session.state = state.azan_notif;
+        },
+    };
+
     module.return = ctx => {
         switch (ctx.session.state) {
             case state.select_province:
@@ -122,6 +151,7 @@ module.exports = function (bot) {
                 module.start.select_province(ctx);
                 break;
             case state.get_owghat:
+            case state.azan_notif:
                 module.home(ctx);
                 break;
             case state.change_city:

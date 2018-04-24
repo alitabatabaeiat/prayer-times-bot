@@ -53,7 +53,12 @@ bot.hears(button.all_cities(), hearsCtrl.start.city_selected);
 //
 // get_owghat
 bot.hears(button.get_owghat, hearsCtrl.get_owghat);
+bot.hears(button.azan_notif.start, hearsCtrl.azan_notif.start);
 bot.hears(button.change_city, hearsCtrl.change_city);
+
+bot.hears(['صبح: فعال', 'صبح: غیرفعال'], hearsCtrl.azan_notif.sobh);
+bot.hears(['ظهر: فعال', 'ظهر: غیرفعال'], hearsCtrl.azan_notif.zohr);
+bot.hears(['مغرب: فعال', 'مغرب: غیرفعال'], hearsCtrl.azan_notif.maghreb);
 //
 // // settings
 // bot.action(action.settings.start, actionCtrl.settings.start);
@@ -78,6 +83,7 @@ let session_constructor = ctx => {
         id: ctx.from.id,
         username: ctx.from.username,
         default_config: s.default_config || {},
+        azan_notif: s.azan_notif || {},
         settings: s.settings || {
             azan: {},
             ghaza: {}

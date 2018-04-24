@@ -10,6 +10,7 @@ module.exports = {
         ],
         home: [
             Markup.button(button.get_owghat),
+            Markup.button(button.azan_notif.start),
             Markup.button(button.settings.start)
         ],
         select_province: () => {
@@ -48,49 +49,21 @@ module.exports = {
         owghat_recieved: [
             Markup.button(button.change_city),
             Markup.button(button.return)
-        ]
-    },
-    inline_keyboard: {
-        settings: {
-            start: [
-                [
-                    Markup.callbackButton(button.settings.ghaza.start, action.settings.ghaza.start),
-                    Markup.callbackButton(button.settings.azan.start, action.settings.azan.start)
-                ],
-                [Markup.callbackButton(button.return, action.return)]
-            ],
-            azan: active => {
+        ],
+        azan_notif: {
+            start: azan_notif => {
                 return [
                     [
-                        Markup.callbackButton(button.settings.azan.maghreb(active[2]), action.settings.azan.maghreb),
-                        Markup.callbackButton(button.settings.azan.zohr(active[1]), action.settings.azan.zohr),
-                        Markup.callbackButton(button.settings.azan.sobh(active[0]), action.settings.azan.sobh)
+                        Markup.button(button.azan_notif.maghreb(azan_notif.maghreb)),
+                        Markup.button(button.azan_notif.zohr(azan_notif.zohr)),
+                        Markup.button(button.azan_notif.sobh(azan_notif.sobh))
                     ],
-                    [Markup.callbackButton(button.settings.azan.all(active[3]), action.settings.azan.all)],
-                    [Markup.callbackButton(button.return, action.return)]
+                    [Markup.button(button.return)]
                 ]
             }
-        },
-        return: [Markup.callbackButton(button.return, action.return)],
-        select_city: (province) => {
-            let keyboard = [];
-            let row = [];
-            let counter = 0;
-            let city = cities(parseInt(province.split("_")[1]));
-
-            for (let c in city) {
-                row.push(Markup.callbackButton(city[c], c));
-                counter++;
-                if (counter === 3) {
-                    keyboard.push(row);
-                    row = [];
-                    counter = 0;
-                }
-            }
-            return keyboard;
         }
-
     },
+    inline_keyboard: {},
     create_keyboard: (keyboard, options = {}) => {
         if (!options.extra)
             options = Object.assign(options, {extra: {}});

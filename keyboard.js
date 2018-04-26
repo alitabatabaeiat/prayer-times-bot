@@ -11,7 +11,7 @@ module.exports = {
         home: [
             Markup.button(button.get_owghat),
             Markup.button(button.azan_notif.start),
-            Markup.button(button.settings.start)
+            // Markup.button(button.settings.start)
         ],
         select_province: () => {
             let keyboard = [[Markup.button(button.return)]];

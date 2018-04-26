@@ -56,22 +56,14 @@ bot.hears(button.get_owghat, hearsCtrl.get_owghat);
 bot.hears(button.azan_notif.start, hearsCtrl.azan_notif.start);
 bot.hears(button.change_city, hearsCtrl.change_city);
 
-bot.hears(['صبح: فعال', 'صبح: غیرفعال'], hearsCtrl.azan_notif.sobh);
-bot.hears(['ظهر: فعال', 'ظهر: غیرفعال'], hearsCtrl.azan_notif.zohr);
-bot.hears(['مغرب: فعال', 'مغرب: غیرفعال'], hearsCtrl.azan_notif.maghreb);
-//
-// // settings
-// bot.action(action.settings.start, actionCtrl.settings.start);
-//
-// bot.action(action.settings.azan.start, actionCtrl.settings.azan.start);
-// bot.action(action.settings.azan.sobh, actionCtrl.settings.azan.sobh);
-// bot.action(action.settings.azan.zohr, actionCtrl.settings.azan.zohr);
-// bot.action(action.settings.azan.maghreb, actionCtrl.settings.azan.maghreb);
-// bot.action(action.settings.azan.all, actionCtrl.settings.azan.all);
-//
-// bot.action(action.settings.ghaza.start, actionCtrl.settings.ghaza.start);
-//
-//
+const azan_notif = {
+    sobh: [button.azan_notif.sobh(true), button.azan_notif.sobh(false)],
+    zohr: [button.azan_notif.zohr(true), button.azan_notif.zohr(false)],
+    maghreb: [button.azan_notif.maghreb(true), button.azan_notif.maghreb(false)]
+};
+bot.hears(azan_notif.sobh, hearsCtrl.azan_notif.sobh);
+bot.hears(azan_notif.zohr, hearsCtrl.azan_notif.zohr);
+bot.hears(azan_notif.maghreb, hearsCtrl.azan_notif.maghreb);
 // return
 bot.hears(button.return, hearsCtrl.return);
 
@@ -84,10 +76,7 @@ let session_constructor = ctx => {
         username: ctx.from.username,
         default_config: s.default_config || {},
         azan_notif: s.azan_notif || {},
-        settings: s.settings || {
-            azan: {},
-            ghaza: {}
-        },
+        settings: s.settings || {},
         state: s.state >= 0 ? s.state : -1
     };
 };

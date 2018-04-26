@@ -1,12 +1,12 @@
 const {state} = require('../state');
-const schedule = require('node-schedule');
 const {keyboard, inline_keyboard, create_keyboard} = require('../keyboard');
-const {message, button} = require('../string');
+const {message, button, equals} = require('../string');
 const {PrayTimes} = require('../praytimes');
 const commandCtrl = require('./command');
 const {Markup} = require('telegraf');
 const nodeGeocoder = require('node-geocoder');
 const timezone = require('node-google-timezone');
+const util = require('../util');
 
 const options = {
     provider: 'google',
@@ -120,25 +120,13 @@ module.exports = function (bot) {
             ctx.session.state = state.azan_notif;
         },
         sobh: ctx => {
-            let {sobh} = ctx.session.azan_notif;
-            ctx.session.azan_notif.sobh = ctx.message.text.search('غیرفعال') !== -1;
-            ctx.replyWithHTML(message.azan_notif.sobh(sobh),
-                create_keyboard(keyboard.azan_notif.start(ctx.session.azan_notif), {resize_keyboard: true}));
-            ctx.session.state = state.azan_notif;
+            util.hears_azan_notif(bot, ctx, 'sobh');
         },
         zohr: ctx => {
-            let {zohr} = ctx.session.azan_notif;
-            ctx.session.azan_notif.zohr = ctx.message.text.search('غیرفعال') !== -1;
-            ctx.replyWithHTML(message.azan_notif.zohr(zohr),
-                create_keyboard(keyboard.azan_notif.start(ctx.session.azan_notif), {resize_keyboard: true}));
-            ctx.session.state = state.azan_notif;
+            util.hears_azan_notif(bot, ctx, 'zohr');
         },
         maghreb: ctx => {
-            let {maghreb} = ctx.session.azan_notif;
-            ctx.session.azan_notif.maghreb = ctx.message.text.search('غیرفعال') !== -1;
-            ctx.replyWithHTML(message.azan_notif.maghreb(maghreb),
-                create_keyboard(keyboard.azan_notif.start(ctx.session.azan_notif), {resize_keyboard: true}));
-            ctx.session.state = state.azan_notif;
+            util.hears_azan_notif(bot, ctx, 'maghreb');
         },
     };
 
